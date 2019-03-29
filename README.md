@@ -1,2 +1,1 @@
-# git_test
-Git test
+yes
