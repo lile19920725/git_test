@@ -1,3 +1,5 @@
+awk的使用：https://www.jianshu.com/p/ea22c809ae9f
+
 添加ssh授权：
 	1,命令行输入：ssh-keygen
 	2,复制：～/.ssh/id_rsa.pub中内容
