@@ -1,0 +1,15 @@
+
+
+
+for i in {1..22} X Y
+do (~/biosoft/GATK4.0/gatk-4.0.5.1/gatk HaplotypeCaller -R ~/reference/genome/gatk_hg38/Homo_sapiens_assembly38.fasta -I KPGP-00216_L1.sorted.marked.fixed.BQSR.bam --dbsnp ~/annotation/GATK/resources/bundle/hg38/dbsnp_146.hg38.vcf.gz -L chr$i -O KPGP-00216_L1.chr$i.raw.vcf &)
+done
+
+~/biosoft/GATK4.0/gatk-4.0.5.1/gatk GatherVcfs $(for i in {1..22} X Y;do echo "-I KPGP-00216_L1.chr${i}.raw.vcf";done) -O KPGP-00216_L1_gather.raw.vcf
+
+
+less chrom_27 | while read i
+do (java -Xmx10g -XX:ParallelGCThreads=10 -jar /opt/software/GenomeAnalysisTK-3.8/GenomeAnalysisTK.jar -T HaplotypeCaller -nct 10  -R /lustre/reference/Ovis_aries_V4.0/GCA_000298735.2_Oar_v4.0/GCA_000298735.2_Oar_v4.0_genomic.fna --emitRefConfidence GVCF -I /lustre/DNA/KPSYF2017003_sheep_reseq_callSNP/thread/03.bwa_dup_gvcf/duplicated/H11.bwamem.MR.sorted.rmdup.bam -L  $i -o /lustre/DNA/KPSYF2017003_sheep_reseq_callSNP/thread/03.bwa_dup_gvcf/gvcf/H11_chr.raw_variants.g.vcf --disable_auto_index_creation_and_locking_when_reading_rods -variant_index_type LINEAR -variant_index_parameter 128000 2>/lustre/DNA/KPSYF2017003_sheep_reseq_callSNP/thread/03.bwa_dup_gvcf/gvcf/log/H11.log && touch /lustre/DNA/KPSYF2017003_sheep_reseq_callSNP/thread/03.bwa_dup_gvcf/gvcf/sh/H11.sh.check)
+done
+
+java -Xmx10g -XX:ParallelGCThreads=10 -jar /opt/software/GenomeAnalysisTK-3.8/GenomeAnalysisTK.jar -T GatherVcfs  $(less chrom_27 | while read i;do echo "-I KPGP-00216_L1.chr${i}.raw.vcf";done)
